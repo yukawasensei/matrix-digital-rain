@@ -99,10 +99,18 @@ const DigitalRain = () => {
     ]);
   };
 
+  const handleMouseLeave = () => {
+    // 将鼠标位置重置到远离画布的位置
+    mouseRef.current = { x: -1000, y: -1000 };
+    // 清除所有涟漪效果
+    setRipples([]);
+  };
+
   return (
     <div
       className="ripple-container"
       onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
       style={{ position: 'relative', width: '100vw', height: '100vh' }}
     >
       <canvas
