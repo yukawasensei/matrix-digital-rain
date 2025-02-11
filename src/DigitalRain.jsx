@@ -119,7 +119,8 @@ const DigitalRain = () => {
           position: 'absolute',
           top: 0,
           left: 0,
-          zIndex: 1
+          zIndex: 1,
+          background: 'transparent'
         }}
       />
       {ripples.map(ripple => (
