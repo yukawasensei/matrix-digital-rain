@@ -8,6 +8,7 @@ const drops = Array(columns).fill(0);
 
 const DigitalRain = () => {
   const canvasRef = useRef(null);
+  const mouseRef = useRef({ x: -1000, y: -1000 });
   
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -42,10 +43,22 @@ const DigitalRain = () => {
           const char = chars[Math.floor(Math.random() * chars.length)];
           ctx.fillText(char, i * fontSize, drops[i] * fontSize);
           
+          // 碰撞检测
+          const charX = i * fontSize;
+          const charY = drops[i] * fontSize;
+          const dx = charX - mouseRef.current.x;
+          const dy = charY - mouseRef.current.y;
+          const distance = Math.sqrt(dx*dx + dy*dy);
+          
+          if (distance < 80) { // 影响半径80像素
+            const force = (1 - distance/80) * 2; // 排斥力度
+            drops[i] -= force * Math.sin(Date.now()/200); // 带正弦波动的反弹
+          }
+
           if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
             drops[i] = 0;
           }
-          drops[i]++;
+          drops[i] += 0.5 + Math.random() * 0.5; // 基础下落速度
         }
         lastTime = timestamp;
       }
@@ -65,13 +78,17 @@ const DigitalRain = () => {
   
   const handleMouseMove = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
-    const newRipple = {
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top,
-      id: Date.now()
-    };
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
     
-    setRipples(prev => [...prev.slice(-5), newRipple]);
+    // 更新鼠标位置引用
+    mouseRef.current = { x, y };
+    
+    // 添加新涟漪
+    setRipples(prev => [
+      ...prev.slice(-3),
+      { x, y, id: Date.now() }
+    ]);
   };
 
   return (
