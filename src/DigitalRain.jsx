@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './DigitalRain.css';
 
 const chars = '01ABCDEFGHIJKLMNOPQRSTUVWXYZあアイウ';
@@ -61,16 +61,47 @@ const DigitalRain = () => {
     };
   }, []);
 
+  const [ripples, setRipples] = useState([]);
+  
+  const handleMouseMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const newRipple = {
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+      id: Date.now()
+    };
+    
+    setRipples(prev => [...prev.slice(-5), newRipple]);
+  };
+
   return (
-    <canvas 
-      ref={canvasRef}
-      style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        zIndex: 9999
-      }}
-    />
+    <div
+      className="ripple-container"
+      onMouseMove={handleMouseMove}
+      style={{ position: 'relative', width: '100vw', height: '100vh' }}
+    >
+      <canvas
+        ref={canvasRef}
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          zIndex: 1
+        }}
+      />
+      {ripples.map(ripple => (
+        <div
+          key={ripple.id}
+          className="ripple"
+          style={{
+            left: ripple.x,
+            top: ripple.y,
+            position: 'absolute',
+            pointerEvents: 'none'
+          }}
+        />
+      ))}
+    </div>
   );
 };
 

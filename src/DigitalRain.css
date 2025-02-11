@@ -8,3 +8,31 @@ canvas {
   display: block;
   image-rendering: pixelated;
 }
+
+.ripple-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.ripple {
+  width: 50px;
+  height: 50px;
+  border: 2px solid #0ff;
+  border-radius: 50%;
+  animation: ripple 1.2s ease-out;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+@keyframes ripple {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(4);
+    opacity: 0;
+  }
+}
