@@ -43,16 +43,24 @@ const DigitalRain = () => {
           const char = chars[Math.floor(Math.random() * chars.length)];
           ctx.fillText(char, i * fontSize, drops[i] * fontSize);
           
-          // 碰撞检测
+          // 增强的碰撞检测
           const charX = i * fontSize;
           const charY = drops[i] * fontSize;
           const dx = charX - mouseRef.current.x;
           const dy = charY - mouseRef.current.y;
           const distance = Math.sqrt(dx*dx + dy*dy);
           
-          if (distance < 80) { // 影响半径80像素
-            const force = (1 - distance/80) * 2; // 排斥力度
-            drops[i] -= force * Math.sin(Date.now()/200); // 带正弦波动的反弹
+          if (distance < 120) { // 增加影响半径到120像素
+            const force = (1 - distance/120) * 3; // 增加排斥力度
+            // 添加更复杂的波动效果
+            const time = Date.now();
+            const waveX = Math.sin(time/200 + i/5) * 0.5; // 水平波动
+            const waveY = Math.cos(time/300) * 0.5; // 垂直波动
+            drops[i] -= force * (1 + waveY);
+            // 添加水平偏移
+            const horizontalOffset = waveX * force * 2;
+            ctx.fillText(char, charX + horizontalOffset, drops[i] * fontSize);
+            continue; // 跳过默认的fillText
           }
 
           if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
